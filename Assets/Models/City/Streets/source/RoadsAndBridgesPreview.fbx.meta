@@ -1,9 +1,14 @@
 fileFormatVersion: 2
-guid: 78246cf461c477f4cb6a13c8df989411
+guid: cba53f53ce5ec094ba681973a2d32809
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Placeable
+    second: {fileID: 2100000, guid: dffe679c87995bc4fa52ee72f5a7a55f, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
