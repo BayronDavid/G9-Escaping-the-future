@@ -1,40 +1,94 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hoverboard : MonoBehaviour
-{
+public class Hoverboard : MonoBehaviour {
+	[Header("Flying")]
+	[SerializeField] float maxRaycastLen = 0.3f;
+	[SerializeField] float flyingHeight = 0.2f;
+	[SerializeField] float flyForce = 11.0f;
 
-    Rigidbody hb;
-    public float mult;
-    public float moveForce;
-    public float turnTorque;
+	[Header("Rotation")]
+	[SerializeField] float rotationStr = 1;
 
-    void Start()
-    {
-        hb = GetComponent<Rigidbody>();
-    }
+	[Header("Moving")]
+	[SerializeField] float moveAcl = 1;
 
-    public Transform[] anchors = new Transform[4];
-    public RaycastHit[] hits = new RaycastHit[4];
+	[Header("Refs")]
+	[SerializeField] Rigidbody rb;
+	[SerializeField] Transform[] raycastPos;
+	[SerializeField] Vector3 centreOfMass;
 
-    void FixedUpdate()
-    {
-        for (int i = 0; i < 4; i++)
-            ApplyF(anchors[i], hits[i]);
+	bool isTunnOff = true;
+	float currForce;
+	float currTurn;
 
-        hb.AddForce(Input.GetAxis("Vertical") * moveForce * transform.forward);
-        hb.AddTorque(Input.GetAxis("Horizontal") * turnTorque * transform.up);
+	RaycastHit[] raycastHit;
+	bool[] isRaycastHit;
+	bool pressW;
 
-    }
+	Vector3 velocity = Vector3.zero;
 
-    void ApplyF(Transform anchor, RaycastHit hit)
-    {
-        if (Physics.Raycast(anchor.position, -anchor.up, out hit))
-        {
-            float force = 0;
-            force = Mathf.Abs(1 / (hit.point.y - anchor.position.y));
-            hb.AddForceAtPosition(transform.up * force * mult, anchor.position, ForceMode.Acceleration);
-        }
-    }
+	void Awake() {
+		raycastHit = new RaycastHit[raycastPos.Length];
+		isRaycastHit = new bool[raycastPos.Length];
+		rb.centerOfMass = centreOfMass;
+	}
+
+	void Update() {
+		bool isSpacePressed = Input.GetKey(KeyCode.Space);
+		if (isTunnOff != isSpacePressed) {
+			isTunnOff = isSpacePressed;
+			if (isTunnOff)
+				EnableRagdoll();
+			else
+				DisableRagdoll();
+		}
+
+		float hor = Input.GetAxisRaw("Horizontal");
+		currTurn = hor != 0 ? hor * rotationStr : 0;
+
+		if (isTunnOff)
+			return;
+
+		float vert = Input.GetAxisRaw("Vertical");
+		currForce = vert != 0 ? vert * moveAcl : 0;
+	}
+
+	void FixedUpdate() {
+		if (currTurn != 0)
+			rb.AddRelativeTorque(Vector3.up * currTurn);
+
+		if (isTunnOff)
+			return;
+		byte hittedRaycast = 0;
+
+		for (byte i = 0; i < raycastPos.Length; ++i) {
+			isRaycastHit[i] = Physics.Raycast(raycastPos[i].position, Vector3.down, out raycastHit[i], maxRaycastLen, LayerMask.GetMask("Floor"));
+
+			if (isRaycastHit[i]) {
+				++hittedRaycast;
+
+				rb.AddForceAtPosition(Vector3.up * flyForce * (1.0f - (raycastHit[i].distance / flyingHeight)), raycastPos[i].position);
+			}
+
+			//ProcessSmog(i);
+		}
+
+		if(hittedRaycast != 0) {
+			//rb.AddForce(Vector3.up * flyForce * (1.0f - (avgLen / flyingHeight)));
+
+			if (currForce != 0)
+				rb.AddForce(transform.right * currForce);
+		}
+	}
+
+
+	void EnableRagdoll() {
+		//animatorHoverboard.enabled = false;
+	}
+
+	void DisableRagdoll() {
+		//animatorHoverboard.enabled = true;
+	}
 }
