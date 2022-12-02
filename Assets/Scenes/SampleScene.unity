@@ -20896,7 +20896,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2230881446035827744, guid: 6ad186baa176fec46b1f88a01f8c7732, type: 3}
       propertyPath: flyForce
-      value: 1000
+      value: 750
       objectReference: {fileID: 0}
     - target: {fileID: 2230881446035827744, guid: 6ad186baa176fec46b1f88a01f8c7732, type: 3}
       propertyPath: rotationStr
@@ -20904,11 +20904,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2230881446035827744, guid: 6ad186baa176fec46b1f88a01f8c7732, type: 3}
       propertyPath: flyingHeight
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2230881446035827744, guid: 6ad186baa176fec46b1f88a01f8c7732, type: 3}
       propertyPath: maxRaycastLen
       value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 2230881446035827745, guid: 6ad186baa176fec46b1f88a01f8c7732, type: 3}
+      propertyPath: m_Drag
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2230881446035827745, guid: 6ad186baa176fec46b1f88a01f8c7732, type: 3}
+      propertyPath: m_Mass
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 2230881446035827747, guid: 6ad186baa176fec46b1f88a01f8c7732, type: 3}
       propertyPath: m_Name
